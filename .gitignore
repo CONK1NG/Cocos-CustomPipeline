@@ -1,0 +1,7 @@
+#################### .gitignore ####################
+
+# Prerequisites
+/SponzaV01/temp/
+/SponzaV01/library/
+/SponzaV01/.creator/
+/SponzaV01/profiles/
