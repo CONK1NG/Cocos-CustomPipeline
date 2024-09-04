@@ -74,7 +74,7 @@ export class GaussianBlur extends postProcess.PostProcessSetting{
         checkEnable：用于判断此后效是否开启
         name：后效的名字，一般保持和类名一致即可
         outputNames：最终输出的 RT 数组。（临时用的 RT 不用放在这里）
-        render：用于执行渲染流程 
+        render：用于执行渲染流程  每帧执行
 */
 export class GaussianBlurPass extends postProcess.SettingPass {
     get setting () { return this.getSetting(GaussianBlur); }
@@ -96,18 +96,18 @@ export class GaussianBlurPass extends postProcess.SettingPass {
             return;
         }
 
-        let passContext = this.context;
+        let passContext = this.context; /*  绘制节点数据 */
         passContext.material = setting.material;
 
         const cameraID = this.getCameraUniqueID(camera);
         const cameraName = `Camera${cameraID}`;
         const passViewport = passContext.passViewport;
 
-        passContext.clearBlack();
+        passContext.clearBlack(); /* 清理背景 */
         const format = Format.RGBA8;
 
-        let input = this.lastPass!.slotName(camera, 0);
-        for(let i = 0; i < setting.iterations; ++i){
+        let input = this.lastPass!.slotName(camera, 0); /* 模糊的处理，需要使用上一个处理流程结束后的画面内容 */
+        for(let i = 0; i < setting.iterations; ++i){    /* 迭代一次，绘制流程就会走一遍 */
             passContext
                 .updatePassViewPort() //这个函数用来指定相对分辨率大小，这个根据算法需求来指定就行。如果要保持和后台缓冲区一样大，传入 1.0 即可。
                 .addRenderPass(`blur-x`, `blur-x${cameraID}`) /* 这个函数用来告诉管线，需要执行一次绘制流程。layout：对应的是 Cocos Shader 中的 Pass 名称 ,passName：助记名称，便于调试查看 */

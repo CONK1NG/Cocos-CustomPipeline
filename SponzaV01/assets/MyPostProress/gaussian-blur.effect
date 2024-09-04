@@ -39,6 +39,9 @@ CCProgram blur-hor-vs %{
     gl_Position.y = gl_Position.y;
     v_uv = a_texCoord;
     
+  /*   cc_nativeSize
+    xy：实际着色缓冲的尺寸
+    zw：实际着色缓冲的尺寸倒数 */
     vec2 texelSize = cc_nativeSize.zw;
     float blurOffsetX = blurParams.x * texelSize.x;
 
@@ -94,7 +97,7 @@ CCProgram blur-fs %{
   in vec2 v_uv3;
   in vec2 v_uv4;
 
-  #pragma rate outputResultMap pass
+  #pragma rate outputResultMap pass  /* #pragma rate 指定更新频率 不同的变量有不同的更新频率 数据更新频率*/
   uniform sampler2D outputResultMap;
 
   layout(location = 0) out vec4 fragColor;
